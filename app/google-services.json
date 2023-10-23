@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "749418902269",
+    "project_id": "rodrigopersogliaappmov",
+    "storage_bucket": "rodrigopersogliaappmov.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749418902269:android:a99f0b5f89845e9c740494",
+        "android_client_info": {
+          "package_name": "com.example.test1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWhFgeQedpxJ4bzTQkmJHtuEPa5YMSEwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
