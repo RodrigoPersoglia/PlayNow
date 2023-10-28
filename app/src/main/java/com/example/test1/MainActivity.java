@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
     Button login,register;
     TextView email_input, email_label, usuario_input, usuario_label,contraseña_input,contraseña_label;
-
     Switch sw;
     FirebaseAuth mAuth;
 
@@ -30,9 +29,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        StartComponents();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null){
+            startActivity(new Intent(MainActivity.this, SubscriberMain.class));
+            finish();
+        }
+    }
+
+    private void StartComponents(){
         mAuth = FirebaseAuth.getInstance();
-        sw = (Switch) findViewById(R.id.publisher_switch);
-        register = (Button) findViewById(R.id.btn_join);
+        sw = findViewById(R.id.publisher_switch);
+        register = findViewById(R.id.btn_join);
         register.setOnClickListener(view -> GoTo(Register.class));
         email_input = findViewById(R.id.email_input);
         email_label = findViewById(R.id.email_label);
@@ -40,45 +53,12 @@ public class MainActivity extends AppCompatActivity {
         usuario_label = findViewById(R.id.usuario_label);
         contraseña_input = findViewById(R.id.contraseña_input);
         contraseña_label = findViewById(R.id.contraseña_label);
-        email_input.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                email_label.setTextColor(Color.BLUE);
-            } else {
-                String text = email_input.getText().toString();
-                if(text.length()>0){
-                    email_label.setTextColor(Color.BLACK);
-                }
-                else{
-                    email_label.setTextColor(Color.RED);
-                }
-            }
-        });
-        usuario_input.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                usuario_label.setTextColor(Color.BLUE);
-            } else {
-                String text = usuario_input.getText().toString();
-                if(text.length()>0){
-                    usuario_label.setTextColor(Color.BLACK);
-                }
-                else{
-                    usuario_label.setTextColor(Color.RED);
-                }
-            }
-        });
-        contraseña_input.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                contraseña_label.setTextColor(Color.BLUE);
-            } else {
-                String text = contraseña_input.getText().toString();
-                if(text.length()>0){
-                    contraseña_label.setTextColor(Color.BLACK);
-                }
-                else{
-                    contraseña_label.setTextColor(Color.RED);
-                }
-            }
-        });
+        login = findViewById(R.id.btn_register);
+        login.setOnClickListener(view -> Login());
+        GetExtras();
+    }
+
+    private void GetExtras(){
         Intent intent = getIntent();
         if (intent.hasExtra("user")) {
             String user = intent.getStringExtra("user");
@@ -92,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
             String email = intent.getStringExtra("email");
             email_input.setText(email);
         }
-        login = (Button) findViewById(R.id.btn_register);
-        login.setOnClickListener(view -> Login());
     }
 
     private void Login(){
@@ -108,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(MainActivity.this, "Bienvenido" + user.getEmail(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MainActivity.this, "Bienvenido " + user.getEmail(), Toast.LENGTH_SHORT).show();
                                 GoToView();
                             } else {
                                 Toast.makeText(MainActivity.this, "Usuario y/o contraseña invalida", Toast.LENGTH_SHORT).show();
@@ -133,5 +111,8 @@ public class MainActivity extends AppCompatActivity {
         GoTo(rol);
         finish();
     }
+
+
+
 
 }

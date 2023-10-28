@@ -65,6 +65,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
+            android:hint="Ingrese su email"
             android:inputType="textEmailAddress" />
 
         <TextView
@@ -80,6 +81,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
+            android:hint="Ingrese un nombre de usuario"
             android:inputType="text" />
 
         <TextView
@@ -95,6 +97,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
+            android:hint="Ingrese una contraseña"
             android:inputType="textPassword" />
 
 
@@ -111,6 +114,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:ems="10"
+            android:hint="Ingrese su telefono"
             android:inputType="phone" />
 
         <TextView

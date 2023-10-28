@@ -24,5 +24,12 @@
             android:layout_height="wrap_content"
             android:text="Buscar Evento"
             app:cornerRadius="10dp" />
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cerrar Sesión"
+            app:cornerRadius="10dp" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
