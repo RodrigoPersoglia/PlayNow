@@ -100,6 +100,22 @@
             android:hint="Ingrese una contraseña"
             android:inputType="textPassword" />
 
+        <TextView
+            android:id="@+id/contraseña_label2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="repetir contraseña" />
+
+        <EditText
+            android:id="@+id/contraseña_input2"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:ems="10"
+            android:hint="repita la contraseña"
+            android:inputType="textPassword" />
+
 
         <TextView
             android:id="@+id/telefono_label"
@@ -125,8 +141,10 @@
             android:text="rol de usuario" />
 
         <RadioGroup
+            android:id="@+id/rg_rol"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checkedButton="@id/radioButton3"
             android:orientation="horizontal">
 
             <RadioButton
