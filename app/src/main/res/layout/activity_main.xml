@@ -69,21 +69,21 @@
             android:hint="Ingrese su email"
             android:inputType="textEmailAddress" />
 
-        <TextView
-            android:id="@+id/usuario_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="usuario" />
+<!--        <TextView-->
+<!--            android:id="@+id/usuario_label"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="usuario" />-->
 
-        <EditText
-            android:id="@+id/usuario_input"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:ems="10"
-            android:hint="Ingrese su usuario"
-            android:inputType="text" />
+<!--        <EditText-->
+<!--            android:id="@+id/usuario_input"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="50dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:ems="10"-->
+<!--            android:hint="Ingrese su usuario"-->
+<!--            android:inputType="text" />-->
 
         <TextView
             android:id="@+id/contraseña_label"

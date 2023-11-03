@@ -150,12 +150,12 @@ public class Register extends AppCompatActivity {
         finish();
     }
 
-    private void GoToLoginWithParameters(String user, String pass, String email) {
+    private void GoToLoginWithParameters(String pass, String email) {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra("user", user);
         intent.putExtra("pass", pass);
         intent.putExtra("email", email);
         startActivity(intent);
+        finish();
     }
 
     private void registerUser(String nameUser, String emailUser, String passUser, String phoneUser, String rolUser) {
@@ -193,10 +193,10 @@ public class Register extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(Register.this, "Usuario creado correctamente", Toast.LENGTH_SHORT).show();
                                 mAuth.signOut();
-                                GoToLoginWithParameters(nameUser, passUser, emailUser);
+                                GoToLoginWithParameters(passUser, emailUser);
                             } else {
                                 Toast.makeText(Register.this, "Error al crear el perfil del usuario", Toast.LENGTH_SHORT).show();
-                                GoToLoginWithParameters(nameUser, passUser, emailUser);
+                                GoToLoginWithParameters(passUser, emailUser);
                             }
                         }
                     });
