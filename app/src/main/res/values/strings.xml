@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">test 1</string>
 <!--   <string name="app_name">AppMovil</string>-->
-    <string name="nombre">Nombre</string>
+    <string name="nombre">Nombre del evento</string>
     <string name="publicador">Publicador</string>
-    <string name="status">Status</string>
+    <string name="quantity">Cantidad de jugadores</string>
     <string name="localizacion">Localizacion</string>
     <string name="lista_de_eventos">Lista de Eventos</string>
 </resources>

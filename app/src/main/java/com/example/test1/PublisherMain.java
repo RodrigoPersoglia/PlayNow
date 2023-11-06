@@ -1,7 +1,5 @@
 package com.example.test1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,22 +7,28 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.test1.fragments.LocalizationDialogFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.example.test1.fragments.LocalizationDialogFragment;
-
 
 public class PublisherMain extends AppCompatActivity implements LocationSelectionListener {
     private Button createEventButton;
     private LinearLayout createEventLayout;
+    EditText nombreEventoEditText,publicadorEditText,quantityEditText;
+
     private LatLng selectedLocation;
     private boolean locationSelected = false;
 
     private FirebaseFirestore mFirestore;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,7 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         createEventButton = findViewById(R.id.createEventButton);
         createEventLayout = findViewById(R.id.createEventLayout);
 
-        mFirestore = FirebaseFirestore.getInstance(); // Inicializa Firestore
+        mFirestore = FirebaseFirestore.getInstance();
 
         createEventButton.setOnClickListener(view -> {
             createEventButton.setVisibility(View.GONE);
@@ -52,64 +56,67 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
 
             Button saveEventButton = otroLayout.findViewById(R.id.saveEventButton);
             saveEventButton.setOnClickListener(saveEventView -> {
-                EditText nombreEventoEditText = otroLayout.findViewById(R.id.txt_nombreEvent);
-                EditText publicadorEditText = otroLayout.findViewById(R.id.txt_publicadorEvent);
-                EditText statusEditText = otroLayout.findViewById(R.id.txt_statusEvent);
+                nombreEventoEditText = otroLayout.findViewById(R.id.txt_nombreEvent);
+                publicadorEditText = otroLayout.findViewById(R.id.txt_publicadorEvent);
+                quantityEditText = otroLayout.findViewById(R.id.txt_quantityEvent);
 
                 String nameEvent = nombreEventoEditText.getText().toString();
                 String publicadorEvent = publicadorEditText.getText().toString();
-                String statusEvent = statusEditText.getText().toString();
+                String quantityEvent = quantityEditText.getText().toString();
 
-                if (nameEvent.isEmpty()) {
-                    Toast.makeText(PublisherMain.this, "El campo 'Nombre del Evento' es requerido", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (nameEvent.length() < 4) {
-                    Toast.makeText(PublisherMain.this, "El campo 'Nombre del Evento' debe tener al menos 4 caracteres", Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
-                if (publicadorEvent.isEmpty()) {
-                    Toast.makeText(PublisherMain.this, "El campo 'Nombre del Publicador' es requerido", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (publicadorEvent.length() < 4) {
-                    Toast.makeText(PublisherMain.this, "El campo 'Nombre del Publicador' debe tener al menos 4 caracteres", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (statusEvent.isEmpty()) {
-                    Toast.makeText(PublisherMain.this, "El campo 'Estado' es requerido", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (statusEvent.length() < 4) {
-                    Toast.makeText(PublisherMain.this, "El campo 'Estado' debe tener al menos 4 caracteres", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (selectedLocation == null) {
-                    Toast.makeText(PublisherMain.this, "Debes seleccionar una ubicación antes de crear el evento", Toast.LENGTH_SHORT).show();
-                }else {
-                    postEvent(nameEvent, publicadorEvent, statusEvent, selectedLocation);
+                if (Validations(nameEvent,quantityEvent,selectedLocation)) {
+                    postEvent(nameEvent, publicadorEvent, quantityEvent, selectedLocation);
                 }
             });
         });
     }
 
-    private void postEvent(String nameEvent, String publicadorEvent, String statusEvent, LatLng selectedLocation) {
+    private boolean Validations(String nameEvent,String quantityEvent,LatLng selectedLocation){
+        Boolean result = true;
 
+        if (!quantityEvent.matches("^[0-9]{1,1000}$") || quantityEvent.equals("0")) {
+            result = false;
+            quantityEditText.setError("Cantidad no válida");
+            quantityEditText.requestFocus();
+        }
+        else {
+            quantityEditText.setError(null);
+        }
+
+        if (nameEvent.length() < 4) {
+            result = false;
+            nombreEventoEditText.setError("el nombre del evento debe tener al menos 4 caracteres");
+            nombreEventoEditText.requestFocus();
+        }
+        else {
+            nombreEventoEditText.setError(null);
+        }
+
+        if (selectedLocation == null) {
+            result = false;
+            Toast.makeText(PublisherMain.this, "Debes seleccionar una ubicación antes de crear el evento", Toast.LENGTH_SHORT).show();
+        }
+
+        return result;
+    }
+
+    private void postEvent(String nameEvent, String publicadorEvent, String quantityEvent, LatLng selectedLocation) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
         Map<String, Object> event = new HashMap<>();
         event.put("nombre", nameEvent);
-        event.put("publicador", publicadorEvent);
-        event.put("status", statusEvent);
+        event.put("publicador", currentUser.getUid());
+        event.put("cantidad", quantityEvent);
+        event.put("status", "Incompleto");
         event.put("localizacion", this.selectedLocation.toString());
 
-        // Guardar el evento en Firestore
         mFirestore.collection("eventos")
                 .add(event)
                 .addOnSuccessListener(documentReference -> {
-                    // se creó
                     Toast.makeText(PublisherMain.this, "Evento creado con éxito", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    // falló
                     Toast.makeText(PublisherMain.this, "Error al crear el evento: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
