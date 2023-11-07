@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomAutoCompleteTextView" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:layout_height">200dp</item> <!-- Ajusta la altura deseada aquí -->
+    </style>
+
+    <!--    estilos para el campo fecha-->
+    <style name="DateTextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="hintTextAppearance">@style/DateHintTextAppearance</item>
+    </style>
+
+    <style name="DateHintTextAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/colorHintText</item>
+    </style>
+
+    <style name="MiEstiloHint" parent="TextAppearance.Design.Hint">
+        <item name="android:textSize">14dp</item> <!-- Ajusta el tamaño de letra según sea necesario -->
+        <item name="android:textColor">@android:color/darker_gray</item> <!-- Ajusta el color de texto según sea necesario -->
+    </style>
+</resources>
