@@ -12,29 +12,50 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.test1.Adapter.EventListAdapter;
 import com.example.test1.fragments.LocalizationDialogFragment;
+import com.example.test1.model.Event;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class PublisherMain extends AppCompatActivity implements LocationSelectionListener {
     private Button createEventButton;
     private LinearLayout createEventLayout;
-    EditText nombreEventoEditText, publicadorEditText, quantityEditText, dateCalendarEditText,timeEventEditText;
+    EditText nombreEventoEditText, publicadorEditText, quantityEditText, dateCalendarEditText, timeEventEditText;
     AutoCompleteTextView sportsEventAutoComplete;
     private LatLng selectedLocation;
     private boolean locationSelected = false;
-
     private FirebaseFirestore mFirestore;
     FirebaseAuth mAuth;
+    RecyclerView recyclerView;
+    EventListAdapter mAdapter;
+    private Date selectedDate;
+    private int selectedTimeMinutes = -1;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +65,17 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         createEventButton = findViewById(R.id.createEventButton);
         createEventLayout = findViewById(R.id.createEventLayout);
         mFirestore = FirebaseFirestore.getInstance();
+
+        // configuro Firestore y RecyclerView
+        recyclerView = findViewById(R.id.listRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Query query = mFirestore.collection("eventos");
+
+        FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
+                new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+
+        mAdapter = new EventListAdapter(firestoreRecyclerOptions);
+        recyclerView.setAdapter(mAdapter);
 
         createEventButton.setOnClickListener(view -> {
             createEventButton.setVisibility(View.GONE);
@@ -75,47 +107,36 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                 int month = calendar.get(Calendar.MONTH);
                 int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                // calendario
                 DatePickerDialog datePickerDialog = new DatePickerDialog(PublisherMain.this, (datePickerView, year1, monthOfYear, dayOfMonth) -> {
-                    // seteo la fecha en el text
                     calendar.set(year1, monthOfYear, dayOfMonth);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    dateCalendarEditText.setText(dateFormat.format(calendar.getTime()));
+                    selectedDate = calendar.getTime(); // guardo la fecha seleccionada
                 }, year, month, day);
 
-                // muestro calendario click
                 datePickerDialog.show();
             });
 
-            Button timeButton = otroLayout.findViewById(R.id.image_time);
-            timeEventEditText = otroLayout.findViewById(R.id.time_Event);  // Mover esta línea aquí
+            timeEventEditText = otroLayout.findViewById(R.id.time_Event);
 
+            Button timeButton = otroLayout.findViewById(R.id.image_time);
             timeButton.setOnClickListener(viewTime -> {
                 // hora actual
-                Calendar currentTime = Calendar.getInstance();
-                int hour = currentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = currentTime.get(Calendar.MINUTE);
+                Calendar calendarTime = Calendar.getInstance();
+                int hour = calendarTime.get(Calendar.HOUR_OF_DAY);
+                int minute = calendarTime.get(Calendar.MINUTE);
 
                 // reloj
-                TimePickerDialog timePickerDialog = new TimePickerDialog(
-                        PublisherMain.this,
-                        (viewTim, selectedHour, selectedMinute) -> {
-                            String amPm;
-                            if (selectedHour < 12) {
-                                amPm = "AM";
-                            } else {
-                                amPm = "PM";
-                                selectedHour -= 12;
-                            }
+                TimePickerDialog timePickerDialog = new TimePickerDialog(PublisherMain.this,
+                        (timePicker, selectedHour, selectedMinute) -> {
+                            calendarTime.set(Calendar.HOUR_OF_DAY, selectedHour);
+                            calendarTime.set(Calendar.MINUTE, selectedMinute);
 
-                            // seteo la hora en el text
-                            String selectedTime = String.format(Locale.getDefault(), "%02d:%02d %s", selectedHour, selectedMinute, amPm);
-                            timeEventEditText.setText(selectedTime);
+                            selectedTimeMinutes = selectedHour * 60 + selectedMinute; // guardar la hora como minutos
                         },
-                        hour, minute, false // formato de 24 horas en false
-                );
+                        hour, // hora actual
+                        minute, // minutos actuales
+                        true);
 
-                // muestro el reloj click
+                // mostrar el TimePickerDialog
                 timePickerDialog.show();
             });
 
@@ -134,23 +155,24 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                 dateCalendarEditText = otroLayout.findViewById(R.id.date_CalendarEvent);
                 timeEventEditText = otroLayout.findViewById(R.id.time_Event);
 
-
                 String nameEvent = nombreEventoEditText.getText().toString();
-                String publicadorEvent = publicadorEditText.getText().toString();
                 String quantityEvent = quantityEditText.getText().toString();
                 String sportsEvent = sportsEventAutoComplete.getText().toString();
-                String dateEvent = dateCalendarEditText.getText().toString();
-                String timeEvent = timeEventEditText.getText().toString();
 
+                if (Validations(nameEvent, quantityEvent, sportsEvent, selectedDate, selectedTimeMinutes, selectedLocation)) {
+                    // creo el objeto Date para la hora seleccionada
+                    Calendar calendarTime = Calendar.getInstance();
+                    calendarTime.set(Calendar.HOUR_OF_DAY, selectedTimeMinutes / 60); // hora
+                    calendarTime.set(Calendar.MINUTE, selectedTimeMinutes % 60); // minutos
+                    Date selectedTimeDate = calendarTime.getTime();
 
-                if (Validations(nameEvent, quantityEvent, sportsEvent, dateEvent, timeEvent, selectedLocation)) {
-                    postEvent(nameEvent, publicadorEvent, quantityEvent, sportsEvent, dateEvent, timeEvent, selectedLocation);
+                    postEvent(nameEvent, quantityEvent, sportsEvent, selectedDate, selectedTimeDate, selectedLocation);
                 }
             });
         });
     }
 
-    private boolean Validations(String nameEvent, String quantityEvent, String sportsEvent, String dateEvent, String timeEvent, LatLng selectedLocation) {
+    private boolean Validations(String nameEvent, String quantityEvent, String sportsEvent, Date dateEvent, int timeEventMinutes, LatLng selectedLocation) {
         Boolean result = true;
 
         if (!quantityEvent.matches("^[0-9]{1,1000}$") || quantityEvent.equals("0")) {
@@ -168,15 +190,17 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         } else {
             nombreEventoEditText.setError(null);
         }
+
         if (sportsEvent.trim().isEmpty()) {
             result = false;
             Toast.makeText(PublisherMain.this, "Debes seleccionar un Deporte antes de crear el evento", Toast.LENGTH_SHORT).show();
         }
-        if (dateEvent.trim().isEmpty()) {
+        if (dateEvent == null) {
             result = false;
             Toast.makeText(PublisherMain.this, "Debes seleccionar una Fecha antes de crear el evento", Toast.LENGTH_SHORT).show();
         }
-        if (timeEvent.trim().isEmpty()) {
+
+        if (timeEventMinutes < 0) {
             result = false;
             Toast.makeText(PublisherMain.this, "Debes seleccionar una Hora antes de crear el evento", Toast.LENGTH_SHORT).show();
         }
@@ -188,18 +212,18 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         return result;
     }
 
-    private void postEvent(String nameEvent, String publicadorEvent, String quantityEvent, String sportsEvent, String dateEvent, String timeEvent, LatLng selectedLocation) {
+    private void postEvent(String nameEvent, String quantityEvent, String sportsEvent, Date dateEventStr, Date timeEventStr, LatLng selectedLocation) {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         Map<String, Object> event = new HashMap<>();
         event.put("nombre", nameEvent);
-        event.put("publicador", currentUser.getUid());
+        event.put("publicador", currentUser.getUid());;
         event.put("cantidad", quantityEvent);
         event.put("status", "Incompleto");
         event.put("deporte", sportsEvent);
-        event.put("fecha", dateEvent);
-        event.put("hora", timeEvent);
-        event.put("localizacion", this.selectedLocation.toString());
+        event.put("fecha", dateEventStr);
+        event.put("hora", timeEventStr);
+        event.put("localizacion", selectedLocation.toString());
 
         mFirestore.collection("eventos")
                 .add(event)
