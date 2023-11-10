@@ -51,7 +51,7 @@
             android:hint="Radio de Busqueda">
 
             <EditText
-                android:id="@+id/txt_quantityEvent"
+                android:id="@+id/radio_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -72,10 +72,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:ems="10"
-                android:gravity="left"
+                android:gravity="center_vertical"
                 android:inputType="none"
-                android:paddingLeft="16dp"
-                android:paddingTop="10dp" />
+                android:paddingStart="16dp"
+                android:paddingTop="0dp"
+                android:paddingEnd="16dp"
+                android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -120,11 +122,33 @@
             android:layout_marginEnd="24dp">
 
             <Button
-                android:id="@+id/saveEventButton"
+                android:id="@+id/search_event_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Buscar"
                 app:cornerRadius="10dp" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Eventos cercanos" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/search_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
+
+        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

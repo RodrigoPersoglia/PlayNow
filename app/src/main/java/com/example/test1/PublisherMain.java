@@ -3,6 +3,7 @@ package com.example.test1;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PublisherMain extends AppCompatActivity implements LocationSelectionListener {
-    private Button createEventButton;
+    private Button createEventButton,logout_btn;
     private LinearLayout createEventLayout;
     EditText nombreEventoEditText, publicadorEditText, quantityEditText, dateCalendarEditText, timeEventEditText;
     AutoCompleteTextView sportsEventAutoComplete;
@@ -61,7 +62,8 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_publisher_main);
-
+        logout_btn = findViewById(R.id.logout_btn);
+        logout_btn.setOnClickListener(view ->LogOut());
         createEventButton = findViewById(R.id.createEventButton);
         createEventLayout = findViewById(R.id.createEventLayout);
         mFirestore = FirebaseFirestore.getInstance();
@@ -147,11 +149,11 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                 dialogFragment.show(getSupportFragmentManager(), "LocalizationDialogFragment");
             });
 
-            Button saveEventButton = otroLayout.findViewById(R.id.saveEventButton);
+            Button saveEventButton = otroLayout.findViewById(R.id.search_event_btn);
             saveEventButton.setOnClickListener(saveEventView -> {
                 nombreEventoEditText = otroLayout.findViewById(R.id.txt_nombreEvent);
                 publicadorEditText = otroLayout.findViewById(R.id.txt_publicadorEvent);
-                quantityEditText = otroLayout.findViewById(R.id.txt_quantityEvent);
+                quantityEditText = otroLayout.findViewById(R.id.radio_txt);
                 dateCalendarEditText = otroLayout.findViewById(R.id.date_CalendarEvent);
                 timeEventEditText = otroLayout.findViewById(R.id.time_Event);
 
@@ -238,5 +240,11 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     public void onLocationSelected(LatLng location) {
         selectedLocation = location;
         locationSelected = true;
+    }
+
+    private void LogOut(){
+        mAuth.signOut();
+        finish();
+        startActivity(new Intent(PublisherMain.this, MainActivity.class));
     }
 }
