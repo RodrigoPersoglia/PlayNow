@@ -44,6 +44,17 @@ public class SubscriberMain extends AppCompatActivity {
         setContentView(R.layout.activity_subscriber_main);
         StartComponents();
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAdapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mAdapter.stopListening();
+    }
 
     private void StartComponents() {
         search_lay = findViewById(R.id.search_lay);
@@ -63,6 +74,7 @@ public class SubscriberMain extends AppCompatActivity {
         radio_txt = search_lay.findViewById(R.id.radio_txt);
         select_sportsEvent = search_lay.findViewById(R.id.select_sportsEvent);
         date_CalendarEvent = search_lay.findViewById(R.id.date_CalendarEvent);
+        SearchEvent();
     }
 
     private void LogOut(){
@@ -116,7 +128,6 @@ public class SubscriberMain extends AppCompatActivity {
 
     private void SearchEvent(){
         if(Validations()){
-
             recyclerView = search_lay.findViewById(R.id.search_recycler);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             mFirestore = FirebaseFirestore.getInstance();
@@ -127,6 +138,7 @@ public class SubscriberMain extends AppCompatActivity {
 
             mAdapter = new EventListAdapter(firestoreRecyclerOptions);
             recyclerView.setAdapter(mAdapter);
+            mAdapter.startListening();
 
             Toast.makeText(SubscriberMain.this, "Logica busqueda evento", Toast.LENGTH_SHORT).show();
         }
@@ -135,33 +147,34 @@ public class SubscriberMain extends AppCompatActivity {
     private boolean Validations() {
         Boolean result = true;
 
-        String calendar = String.valueOf(date_CalendarEvent.getText());
-        if (calendar.trim().isEmpty()) {
-            result = false;
-            date_CalendarEvent.setError("Seleccione una fecha");
-            date_CalendarEvent.requestFocus();
-        } else {
-            date_CalendarEvent.setError(null);
-        }
-
-        String sport = String.valueOf(select_sportsEvent.getText());
-        if (sport.trim().isEmpty()) {
-            result = false;
-            select_sportsEvent.setError("Seleccione un deporte");
-            select_sportsEvent.requestFocus();
-        } else {
-            select_sportsEvent.setError(null);
-        }
-
-        String radio = String.valueOf(radio_txt.getText());
-        if (!radio.matches("^[0-9]{1,1000}$") || radio.equals("0")) {
-            result = false;
-            radio_txt.setError("Cantidad no válida");
-            radio_txt.requestFocus();
-        } else {
-            radio_txt.setError(null);
-        }
+//        String calendar = String.valueOf(date_CalendarEvent.getText());
+//        if (calendar.trim().isEmpty()) {
+//            result = false;
+//            date_CalendarEvent.setError("Seleccione una fecha");
+//            date_CalendarEvent.requestFocus();
+//        } else {
+//            date_CalendarEvent.setError(null);
+//        }
+//
+//        String sport = String.valueOf(select_sportsEvent.getText());
+//        if (sport.trim().isEmpty()) {
+//            result = false;
+//            select_sportsEvent.setError("Seleccione un deporte");
+//            select_sportsEvent.requestFocus();
+//        } else {
+//            select_sportsEvent.setError(null);
+//        }
+//
+//        String radio = String.valueOf(radio_txt.getText());
+//        if (!radio.matches("^[0-9]{1,1000}$") || radio.equals("0")) {
+//            result = false;
+//            radio_txt.setError("Cantidad no válida");
+//            radio_txt.requestFocus();
+//        } else {
+//            radio_txt.setError(null);
+//        }
 
         return result;
     }
+
 }
