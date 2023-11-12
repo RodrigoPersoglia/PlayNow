@@ -28,10 +28,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class PublisherMain extends AppCompatActivity implements LocationSelectionListener {
     private Button createEventButton,logout_btn;
@@ -217,15 +220,19 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     private void postEvent(String nameEvent, String quantityEvent, String sportsEvent, Date dateEventStr, Date timeEventStr, LatLng selectedLocation) {
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        List<String> suscriptores = new ArrayList<>();
         Map<String, Object> event = new HashMap<>();
+        event.put("id", UUID.randomUUID().toString());
         event.put("nombre", nameEvent);
         event.put("publicador", currentUser.getUid());;
-        event.put("cantidad", quantityEvent);
+        event.put("cantidad", Integer.parseInt(quantityEvent));
         event.put("status", "Incompleto");
         event.put("deporte", sportsEvent);
         event.put("fecha", dateEventStr);
         event.put("hora", timeEventStr);
-        event.put("localizacion", selectedLocation.toString());
+        event.put("latitud", selectedLocation.latitude);
+        event.put("longitud", selectedLocation.longitude);
+        event.put("suscriptores", suscriptores);
 
         mFirestore.collection("eventos")
                 .add(event)
