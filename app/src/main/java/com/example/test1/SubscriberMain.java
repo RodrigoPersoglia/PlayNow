@@ -1,12 +1,16 @@
 package com.example.test1;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,9 +21,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.test1.Adapter.EventListAdapter;
+import com.example.test1.Adapter.EventListSearchAdapter;
 import com.example.test1.model.Event;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -27,6 +34,7 @@ import com.google.firebase.firestore.Query;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import android.Manifest;
 
 public class SubscriberMain extends AppCompatActivity {
     Button btn_logOut,btn_search,back_btn,search_event_btn;
@@ -37,12 +45,29 @@ public class SubscriberMain extends AppCompatActivity {
     EditText dateCalendarEditText,radio_txt,select_sportsEvent,date_CalendarEvent;
     AutoCompleteTextView sportsEventAutoComplete;
     RecyclerView recyclerView;
-    EventListAdapter mAdapter;
+    EventListSearchAdapter mAdapter;
+
+    private static final int REQUEST_LOCATION_PERMISSION = 1;
+    private FusedLocationProviderClient fusedLocationClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscriber_main);
         StartComponents();
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_LOCATION_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Process();
+            } else {
+                Toast.makeText(this, "Permiso de ubicación denegado", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
@@ -122,17 +147,7 @@ public class SubscriberMain extends AppCompatActivity {
 
     private void SearchEvent(){
         if(Validations()){
-            recyclerView = search_lay.findViewById(R.id.search_recycler);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            mFirestore = FirebaseFirestore.getInstance();
-            Query query = mFirestore.collection("eventos");
-
-            FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
-                    new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
-            mAdapter = new EventListAdapter(firestoreRecyclerOptions);
-            mAdapter.startListening();
-            recyclerView.setAdapter(mAdapter);
-
+            Process();
         }
     }
 
@@ -167,6 +182,45 @@ public class SubscriberMain extends AppCompatActivity {
         }
 
         return result;
+    }
+
+    private void Process() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_LOCATION_PERMISSION);
+        } else {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                double latitude = location.getLatitude();
+                                double longitude = location.getLongitude();
+                                ShowCards(latitude, longitude);
+                            } else {
+                                Toast.makeText(SubscriberMain.this,
+                                        "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    private void ShowCards(double latitude, double longitude) {
+        String mensaje = "Ubicación: Latitud " + latitude + ", Longitud " + longitude;
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+        recyclerView = search_lay.findViewById(R.id.search_recycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(subscriber_lay.getContext()));
+        mFirestore = FirebaseFirestore.getInstance();
+        Query query = mFirestore.collection("eventos");
+
+        FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
+                new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+        mAdapter = new EventListSearchAdapter(firestoreRecyclerOptions);
+        mAdapter.startListening();
+        recyclerView.setAdapter(mAdapter);
     }
 
 }
