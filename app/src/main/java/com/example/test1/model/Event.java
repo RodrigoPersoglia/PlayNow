@@ -3,7 +3,7 @@ package com.example.test1.model;
 import java.util.Date;
 
 public class Event {
-    private String Uid;
+    private String Id;
     private String Nombre;
     private String Publicador;
     private String Status;
@@ -11,11 +11,13 @@ public class Event {
     private Date Fecha;
     private Date Hora;
     private String Localizacion;
+    private Double Latitud;
+    private Double Longitud;
 
     public Event() {
     }
 
-    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion) {
+    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion,String id, Double latitud,Double longitud) {
         this.Nombre = nombre;
         this.Publicador = publicador;
         this.Status = status;
@@ -23,15 +25,20 @@ public class Event {
         this.Fecha = fecha;
         this.Hora = hora;
         this.Localizacion = localizacion;
+        this.Id = id;
+        this.Latitud = latitud;
+        this.Longitud = longitud;
+    }
+    public Double getLatitud() {
+        return Latitud;
+    }
+    public void setLatitud(Double latitud) {
+        Latitud = latitud;
     }
 
-    public String getUid() {
-        return Uid;
-    }
+    public String getId() { return Id;}
 
-    public void setUid(String uid) {
-        Uid = uid;
-    }
+    public void setId(String id) { Id = id;}
 
     public String getNombre() {
         return Nombre;

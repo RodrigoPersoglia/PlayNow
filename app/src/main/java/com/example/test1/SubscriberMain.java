@@ -218,7 +218,7 @@ public class SubscriberMain extends AppCompatActivity {
 
         FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
-        mAdapter = new EventListSearchAdapter(firestoreRecyclerOptions);
+        mAdapter = new EventListSearchAdapter(SubscriberMain.this, firestoreRecyclerOptions);
         mAdapter.startListening();
         recyclerView.setAdapter(mAdapter);
     }
