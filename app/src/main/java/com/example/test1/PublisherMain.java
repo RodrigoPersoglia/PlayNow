@@ -37,8 +37,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PublisherMain extends AppCompatActivity implements LocationSelectionListener {
-    private Button createEventButton,logout_btn;
-    private LinearLayout createEventLayout;
+    private Button createEventButton,logout_btn,back_btn;
+    private LinearLayout publisherLayout,createEventLayout;
     EditText nombreEventoEditText, publicadorEditText, quantityEditText, dateCalendarEditText, timeEventEditText;
     AutoCompleteTextView sportsEventAutoComplete;
     private LatLng selectedLocation;
@@ -68,7 +68,13 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         logout_btn = findViewById(R.id.logout_btn);
         logout_btn.setOnClickListener(view ->LogOut());
         createEventButton = findViewById(R.id.createEventButton);
-        createEventLayout = findViewById(R.id.createEventLayout);
+        publisherLayout = findViewById(R.id.Publisher_layout);
+        createEventLayout = findViewById(R.id.create_event_layout);
+        View otroLayout = getLayoutInflater().inflate(R.layout.create_event, null);
+        createEventLayout.addView(otroLayout);
+        createEventLayout.setVisibility(View.GONE);
+        back_btn = createEventLayout.findViewById(R.id.back_btn);
+        back_btn.setOnClickListener(view -> Back());
         mFirestore = FirebaseFirestore.getInstance();
 
         // configuro Firestore y RecyclerView
@@ -83,11 +89,11 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         recyclerView.setAdapter(mAdapter);
 
         createEventButton.setOnClickListener(view -> {
-            createEventButton.setVisibility(View.GONE);
+            publisherLayout.setVisibility(View.GONE);
             createEventLayout.setVisibility(View.VISIBLE);
 
-            View otroLayout = getLayoutInflater().inflate(R.layout.create_event, null);
-            createEventLayout.addView(otroLayout);
+//            View otroLayout = getLayoutInflater().inflate(R.layout.create_event, null);
+//            createEventLayout.addView(otroLayout);
 
             sportsEventAutoComplete = otroLayout.findViewById(R.id.select_sportsEvent);
 
@@ -253,5 +259,10 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         mAuth.signOut();
         finish();
         startActivity(new Intent(PublisherMain.this, MainActivity.class));
+    }
+
+    private void Back(){
+        publisherLayout.setVisibility(View.VISIBLE);
+        createEventLayout.setVisibility(View.GONE);
     }
 }

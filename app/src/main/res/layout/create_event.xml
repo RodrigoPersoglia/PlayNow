@@ -10,14 +10,32 @@
     android:layout_gravity="center"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
+        android:background="@android:color/transparent"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingEnd="0dp"
+
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        app:icon="@drawable/ic_arrow_back_foreground"
+        app:iconGravity="start"
+        app:iconPadding="0dp"
+        app:iconSize="40dp"
+        app:iconTint="#020202" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:gravity="center"
         android:text="Crear Evento"
         android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="16dp" />
+        android:textStyle="bold" />
 
     <View
         android:layout_width="match_parent"
