@@ -31,9 +31,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
 import android.Manifest;
 
 public class SubscriberMain extends AppCompatActivity {
@@ -212,13 +215,33 @@ public class SubscriberMain extends AppCompatActivity {
         recyclerView = search_lay.findViewById(R.id.search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(subscriber_lay.getContext()));
         mFirestore = FirebaseFirestore.getInstance();
-        Query query = mFirestore.collection("eventos");
+
+        //fecha seleccionada desde el DatePicker
+        Date selectedDate = fechaSeleccionada();
+        String selectedSport = String.valueOf(select_sportsEvent.getText());
+        //comparo por fecha y deporte
+        Query query = mFirestore.collection("eventos")
+                .whereGreaterThanOrEqualTo("fecha", selectedDate)
+                .whereEqualTo("deporte", selectedSport)
+                .orderBy("fecha");
 
         FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
-                new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+                   new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
         mAdapter = new EventListSearchAdapter(SubscriberMain.this, firestoreRecyclerOptions);
         mAdapter.startListening();
         recyclerView.setAdapter(mAdapter);
+    }
+
+    private Date fechaSeleccionada() {
+        String fechaString = String.valueOf(date_CalendarEvent.getText());
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        try {
+            return formatoFecha.parse(fechaString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new Date();
+        }
     }
 
 }
