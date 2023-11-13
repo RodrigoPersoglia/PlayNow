@@ -16,15 +16,27 @@ import com.example.test1.SubscriberMain;
 import com.example.test1.model.Event;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, EventListSearchAdapter.ViewHolder> {
     private Context mContext;
+    FirebaseAuth mAuth;
     public EventListSearchAdapter(Context context, @NonNull FirestoreRecyclerOptions<Event> options) {
         super(options);
         mContext = context;
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -39,12 +51,10 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
         String formattedTime = timeFormat.format(event.getHora());
         viewHolder.hora.setText(formattedTime);
 
-        String id = event.getId();
         viewHolder.add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext,
-                        id, Toast.LENGTH_SHORT).show();
+                AgregarSuscriptor(event.getId(),mAuth.getUid(),event.getCantidad());
             }
         });
 
@@ -67,5 +77,69 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
             hora = itemView.findViewById(R.id.timeTextView);
             add_btn = itemView.findViewById(R.id.editButton);
         }
+    }
+
+    public void AgregarSuscriptor(String eventoId, final String nuevoSuscriptor, Integer cantidad) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Query query = db.collection("eventos").whereEqualTo("id", eventoId);
+
+        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        document.getReference().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentSnapshot documentSnapshot = task.getResult();
+                                    if (documentSnapshot.exists()) {
+                                        String status = (String) documentSnapshot.get("status");
+                                        if(status.equals("Completo")){
+                                            Toast.makeText(mContext,"El evento ya esta completo", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        ArrayList<String> suscriptores = (ArrayList<String>) documentSnapshot.get("suscriptores");
+
+                                        // Agrega el nuevo suscriptor al array
+                                        if (suscriptores == null) {
+                                            suscriptores = new ArrayList<>();
+                                        }
+                                        if(suscriptores.contains(mAuth.getUid())){
+                                            Toast.makeText(mContext,"Ya se encuentra suscripto a este evento", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        suscriptores.add(nuevoSuscriptor);
+                                        final ArrayList<String> finalSuscriptores = suscriptores;
+
+                                        document.getReference().update("suscriptores", suscriptores)
+                                                .addOnSuccessListener(aVoid -> {
+                                                    Toast.makeText(mContext,"Se ha suscripto correctamente al evento", Toast.LENGTH_SHORT).show();
+                                                    if (finalSuscriptores.size() == cantidad) {
+                                                        document.getReference().update("status", "Completo")
+                                                                .addOnSuccessListener(aVoid1 -> {
+                                                                })
+                                                                .addOnFailureListener(e -> {
+                                                                    Toast.makeText(mContext,"Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                                });
+                                                    }
+                                                })
+                                                .addOnFailureListener(e -> {
+                                                    Toast.makeText(mContext,"Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                });
+                                    } else {
+                                        Toast.makeText(mContext,"El documento no existe", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Toast.makeText(mContext,"Error al obtener el documento", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(mContext,"Error al consultar la base de datos", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

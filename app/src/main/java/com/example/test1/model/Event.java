@@ -14,10 +14,12 @@ public class Event {
     private Double Latitud;
     private Double Longitud;
 
+    private Integer Cantidad;
+
     public Event() {
     }
 
-    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion,String id, Double latitud,Double longitud) {
+    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion,String id, Double latitud,Double longitud, Integer cantidad) {
         this.Nombre = nombre;
         this.Publicador = publicador;
         this.Status = status;
@@ -28,6 +30,14 @@ public class Event {
         this.Id = id;
         this.Latitud = latitud;
         this.Longitud = longitud;
+        this.Cantidad = cantidad;
+    }
+
+    public Integer getCantidad() {
+        return Cantidad;
+    }
+    public void setCantidad(Integer cantidad) {
+        Cantidad = cantidad;
     }
     public Double getLatitud() {
         return Latitud;

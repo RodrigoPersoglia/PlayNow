@@ -209,8 +209,6 @@ public class SubscriberMain extends AppCompatActivity {
     }
 
     private void ShowCards(double latitude, double longitude) {
-        String mensaje = "Ubicación: Latitud " + latitude + ", Longitud " + longitude;
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
         recyclerView = search_lay.findViewById(R.id.search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(subscriber_lay.getContext()));
         mFirestore = FirebaseFirestore.getInstance();
