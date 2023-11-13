@@ -33,6 +33,8 @@ import com.google.firebase.firestore.Query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -97,6 +99,11 @@ public class SubscriberMain extends AppCompatActivity {
         radio_txt = search_lay.findViewById(R.id.radio_txt);
         select_sportsEvent = search_lay.findViewById(R.id.select_sportsEvent);
         date_CalendarEvent = search_lay.findViewById(R.id.date_CalendarEvent);
+        selectedDate = new Date();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+        String fechaFormateada = formatoFecha.format(selectedDate);
+        date_CalendarEvent.setText(fechaFormateada);
+        radio_txt.setText("20");
     }
 
     private void LogOut(){
@@ -215,14 +222,13 @@ public class SubscriberMain extends AppCompatActivity {
         recyclerView = search_lay.findViewById(R.id.search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(subscriber_lay.getContext()));
         mFirestore = FirebaseFirestore.getInstance();
-
-        //fecha seleccionada desde el DatePicker
         Date selectedDate = fechaSeleccionada();
         String selectedSport = String.valueOf(select_sportsEvent.getText());
-        //comparo por fecha y deporte
         Query query = mFirestore.collection("eventos")
                 .whereGreaterThanOrEqualTo("fecha", selectedDate)
                 .whereEqualTo("deporte", selectedSport)
+                .whereEqualTo("status", "Incompleto")
+                .limit(50)
                 .orderBy("fecha");
 
         FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
