@@ -90,7 +90,7 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
 
-        mAdapter = new EventListAdapter(firestoreRecyclerOptions, this);
+        mAdapter = new EventListAdapter(firestoreRecyclerOptions, this, getSupportFragmentManager());
         recyclerView.setAdapter(mAdapter);
 
         createEventButton.setOnClickListener(view -> {

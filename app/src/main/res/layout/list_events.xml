@@ -92,7 +92,7 @@
 
             <!-- Botón Editar -->
             <Button
-                android:id="@+id/editButton"
+                android:id="@+id/btn_editar"
                 android:layout_width="48dp"
                 android:layout_height="match_parent"
                 android:background="@color/transparent"
