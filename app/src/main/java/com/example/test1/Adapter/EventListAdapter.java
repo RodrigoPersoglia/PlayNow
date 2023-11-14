@@ -49,7 +49,6 @@ public class EventListAdapter extends FirestoreRecyclerAdapter<Event, EventListA
 
         viewHolder.nombre.setText(event.getNombre());
 
-        // Formatear fecha y hora como una cadena antes de asignarla al TextView
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String formattedDate = dateFormat.format(event.getFecha());
         viewHolder.fecha.setText(formattedDate);
@@ -61,8 +60,6 @@ public class EventListAdapter extends FirestoreRecyclerAdapter<Event, EventListA
         viewHolder.btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Puedes iniciar la actividad aquí o abrir el fragmento para actualizar
-                // utilizando el código que ya tenías comentado.
                 Intent i = new Intent(activity, PublisherMain.class);
                 i.putExtra("Id", id);
 
@@ -73,7 +70,6 @@ public class EventListAdapter extends FirestoreRecyclerAdapter<Event, EventListA
                 updateEventFragment.show(fragmentManager, "open fragment");
             }
         });
-
         viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

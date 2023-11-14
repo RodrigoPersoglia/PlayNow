@@ -1,5 +1,6 @@
 package com.example.test1.fragments;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,6 @@ public class UpdateEventFragment extends DialogFragment {
                 String cantidadEventStr = cantidad.getText().toString().trim();
                 if (!nombreEvent.isEmpty() && !cantidadEventStr.isEmpty()) {
                     try {
-                        // Convertir cantidadEventStr a Integer
                         Integer cantidadEvent = Integer.parseInt(cantidadEventStr);
                         updateEvent(nombreEvent, cantidadEvent);
                     } catch (NumberFormatException e) {
@@ -61,7 +61,16 @@ public class UpdateEventFragment extends DialogFragment {
 
         return v;
     }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = 1000;
+            int height = 1100;
+            dialog.getWindow().setLayout(width, height);
+        }
+    }
     private void updateEvent(String nombreEvent, Integer cantidadEvent) {
         Map<String, Object> map = new HashMap<>();
         map.put("nombre", nombreEvent);

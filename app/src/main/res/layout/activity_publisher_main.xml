@@ -1,31 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <!-- Formulario de creación de eventos incluido -->
+
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/playNowTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/transparent"
+            android:text="Play Now"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <Button
+            android:id="@+id/logout_btn"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/logout_button_description"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            app:cornerRadius="10dp"
+            app:icon="@drawable/logout"
+            app:iconSize="30dp"
+            app:iconTint="@color/white" />
+    </androidx.appcompat.widget.Toolbar>
+
     <LinearLayout
         android:id="@+id/Publisher_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_margin="0dp"
         android:orientation="vertical"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar3">
 
         <Button
             android:id="@+id/createEventButton"
@@ -34,16 +66,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="10dp"
-            android:text="Crear Evento"
-            app:cornerRadius="10dp" />
-
-        <Button
-            android:id="@+id/logout_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:text="Cerrar Sesión"
+            android:text="@string/crear_evento"
             app:cornerRadius="10dp" />
 
         <TextView
@@ -53,7 +76,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:paddingTop="30dp"
-            android:text="Eventos creados"
+            android:text="@string/eventos_creados"
             android:textColor="@color/black"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -70,8 +93,13 @@
 
     <LinearLayout
         android:id="@+id/create_event_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"></LinearLayout>
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="16dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar3"></LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

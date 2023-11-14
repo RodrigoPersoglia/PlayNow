@@ -9,6 +9,8 @@
     <string name="select">   Seleccionar Deporte</string>
     <string name="fecha_evento">Seleccionar fecha del evento</string>
     <string name="editar">Editar</string>
-
+    <string name="crear_evento">Crear Evento</string>
+    <string name="logout_button_description">Cerrar sesión</string>
+    <string name="eventos_creados">Eventos creados</string>
 
 </resources>

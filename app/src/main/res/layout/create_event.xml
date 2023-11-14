@@ -168,11 +168,13 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp">
+
         <Button
             android:id="@+id/botonSeleccionarUbicacion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_localization"
+            android:drawableTint="@color/white"
             android:text="Seleccionar Ubicación"
             app:cornerRadius="10dp" />
     </com.google.android.material.textfield.TextInputLayout>

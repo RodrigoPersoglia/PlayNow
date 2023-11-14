@@ -11,6 +11,43 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" >
+
+            <TextView
+                android:id="@+id/playNowTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/transparent"
+                android:text="Play Now"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="10dp"
+                android:background="@color/transparent"
+                android:contentDescription="@string/logout_button_description"
+                android:paddingLeft="0dp"
+                android:paddingRight="0dp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/logout"
+                app:iconSize="30dp"
+                app:iconTint="@color/white" />
+        </androidx.appcompat.widget.Toolbar>
+
         <LinearLayout
             android:id="@+id/search_lay"
             android:layout_width="match_parent"
@@ -25,14 +62,6 @@
             android:layout_margin="0dp"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:minHeight="?attr/actionBarSize"
-                android:theme="?attr/actionBarTheme" />
-
             <Button
                 android:id="@+id/search_btn"
                 android:layout_width="match_parent"
@@ -42,17 +71,6 @@
                 android:layout_marginRight="10dp"
                 android:text="Buscar Evento"
                 app:cornerRadius="10dp" />
-
-            <Button
-                android:id="@+id/btn_logout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:text="Cerrar Sesión"
-                app:cornerRadius="10dp" />
         </LinearLayout>
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

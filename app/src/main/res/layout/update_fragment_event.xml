@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
         android:gravity="center"
+        android:paddingTop="20dp"
         android:text="Editar Evento"
         android:textSize="24sp"
         android:textStyle="bold" />
@@ -54,40 +55,6 @@
             android:inputType="number"
             android:paddingTop="12dp" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="16dp">
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Seleccionar Fecha">
-            <EditText
-                android:id="@+id/update_Date"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:clickable="true"
-                android:focusable="false"
-                android:paddingTop="12dp" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/image_calendar"
-            android:layout_width="74dp"
-            android:layout_height="58dp"
-            android:backgroundTint="@color/transparent"
-            android:padding="15dp"
-            app:cornerRadius="10dp"
-            app:icon="@drawable/calendar"
-            app:iconSize="50dp"
-            app:iconTint="@color/black" />
-    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
