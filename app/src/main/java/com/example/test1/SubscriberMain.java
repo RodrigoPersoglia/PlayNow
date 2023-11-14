@@ -22,8 +22,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.test1.Adapter.EventListAdapter;
 import com.example.test1.Adapter.EventListSearchAdapter;
+import com.example.test1.Adapter.ListSubscriptionAdapter;
 import com.example.test1.model.Event;
+import com.example.test1.model.Subscription;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -50,8 +53,9 @@ public class SubscriberMain extends AppCompatActivity {
     private Date selectedDate;
     EditText dateCalendarEditText,radio_txt,select_sportsEvent,date_CalendarEvent;
     AutoCompleteTextView sportsEventAutoComplete;
-    RecyclerView recyclerView;
+    RecyclerView recyclerView,subscription_rv;
     EventListSearchAdapter mAdapter;
+    ListSubscriptionAdapter subscriptionAdapter;
 
     private static final int REQUEST_LOCATION_PERMISSION = 1;
     private FusedLocationProviderClient fusedLocationClient;
@@ -62,6 +66,12 @@ public class SubscriberMain extends AppCompatActivity {
         StartComponents();
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
+
+    protected void onStart() {
+        super.onStart();
+        subscriptionAdapter.startListening();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -80,9 +90,11 @@ public class SubscriberMain extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         mAdapter.stopListening();
+        subscriptionAdapter.stopListening();
     }
 
     private void StartComponents() {
+        mFirestore = FirebaseFirestore.getInstance();
         search_lay = findViewById(R.id.search_lay);
         search_lay.setVisibility(View.GONE);
         View search_event = getLayoutInflater().inflate(R.layout.search_event, null);
@@ -105,6 +117,26 @@ public class SubscriberMain extends AppCompatActivity {
         String fechaFormateada = formatoFecha.format(selectedDate);
         date_CalendarEvent.setText(fechaFormateada);
         radio_txt.setText("20");
+
+        subscription_rv = findViewById(R.id.suscripciones_list);
+        subscription_rv.setLayoutManager(new LinearLayoutManager(this));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Date fechaActual = calendar.getTime();
+
+        Query query = mFirestore.collection("suscripciones")
+                .whereEqualTo("usuario",mAuth.getUid())
+                .whereGreaterThanOrEqualTo("fecha",fechaActual);
+
+        FirestoreRecyclerOptions<Subscription> firestoreRecyclerOptions =
+                new FirestoreRecyclerOptions.Builder<Subscription>().setQuery(query, Subscription.class).build();
+
+        subscriptionAdapter = new ListSubscriptionAdapter(this,firestoreRecyclerOptions);
+        subscription_rv.setAdapter(subscriptionAdapter);
     }
 
     private void LogOut(){
@@ -230,7 +262,6 @@ public class SubscriberMain extends AppCompatActivity {
     private void ShowCards(double latitude, double longitude, int radio) {
         recyclerView = search_lay.findViewById(R.id.search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(subscriber_lay.getContext()));
-        mFirestore = FirebaseFirestore.getInstance();
         Date selectedDate = fechaSeleccionada();
 
         double distanciaGrados = radio / 111.32;
@@ -265,5 +296,4 @@ public class SubscriberMain extends AppCompatActivity {
             return new Date();
         }
     }
-    
 }
