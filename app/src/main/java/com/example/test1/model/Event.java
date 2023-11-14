@@ -7,7 +7,7 @@ public class Event {
     private String Nombre;
     private String Publicador;
     private String Status;
-    private String Sports;
+    private String Deporte;
     private Date Fecha;
     private Date Hora;
     private String Localizacion;
@@ -18,11 +18,11 @@ public class Event {
     public Event() {
     }
 
-    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion, String id, Double latitud, Double longitud, Integer cantidad) {
+    public Event(String nombre, String publicador, String status, String deporte, Date fecha, Date hora, String localizacion, String id, Double latitud, Double longitud, Integer cantidad) {
         this.Nombre = nombre;
         this.Publicador = publicador;
         this.Status = status;
-        this.Sports = sports;
+        this.Deporte = deporte;
         this.Fecha = fecha;
         this.Hora = hora;
         this.Localizacion = localizacion;
@@ -64,12 +64,12 @@ public class Event {
         Status = status;
     }
 
-    public String getSports() {
-        return Sports;
+    public String getDeporte() {
+        return Deporte;
     }
 
-    public void setSports(String sports) {
-        Sports = sports;
+    public void setDeporte(String sports) {
+        Deporte = sports;
     }
 
     public Date getFecha() {

@@ -52,6 +52,22 @@
                 android:layout_marginRight="10dp"
                 android:text="Cerrar Sesión"
                 app:cornerRadius="10dp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:text="Mis suscripciones"
+                android:textSize="20sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/suscripciones_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp" />
         </LinearLayout>
     </LinearLayout>
 

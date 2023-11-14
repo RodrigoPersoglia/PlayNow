@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.test1.R;
 import com.example.test1.SubscriberMain;
 import com.example.test1.model.Event;
+import com.example.test1.model.Subscription;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,10 +34,12 @@ import java.util.Locale;
 public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, EventListSearchAdapter.ViewHolder> {
     private Context mContext;
     FirebaseAuth mAuth;
+    FirebaseFirestore db;
     public EventListSearchAdapter(Context context, @NonNull FirestoreRecyclerOptions<Event> options) {
         super(options);
         mContext = context;
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -54,7 +57,7 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
         viewHolder.add_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AgregarSuscriptor(event.getId(),mAuth.getUid(),event.getCantidad());
+                AgregarSuscriptor(event,mAuth.getUid());
             }
         });
 
@@ -79,9 +82,8 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
         }
     }
 
-    public void AgregarSuscriptor(String eventoId, final String nuevoSuscriptor, Integer cantidad) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Query query = db.collection("eventos").whereEqualTo("id", eventoId);
+    public void AgregarSuscriptor(Event event, final String nuevoSuscriptor) {
+        Query query = db.collection("eventos").whereEqualTo("id", event.getId());
 
         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -115,7 +117,10 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
                                         document.getReference().update("suscriptores", suscriptores)
                                                 .addOnSuccessListener(aVoid -> {
                                                     Toast.makeText(mContext,"Se ha suscripto correctamente al evento", Toast.LENGTH_SHORT).show();
-                                                    if (finalSuscriptores.size() == cantidad) {
+                                                    Subscription suscripcion = new Subscription(mAuth.getUid(),event.getId(),event.getFecha(),event.getHora(),
+                                                    event.getNombre(),"Suscripto",event.getDeporte());
+                                                    agregarSuscripcion(suscripcion);
+                                                    if (finalSuscriptores.size() == event.getCantidad()) {
                                                         document.getReference().update("status", "Completo")
                                                                 .addOnSuccessListener(aVoid1 -> {
                                                                 })
@@ -141,5 +146,16 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
                 }
             }
         });
+    }
+
+    public void agregarSuscripcion(Subscription suscripcion) {
+        db.collection("suscripciones")
+                .add(suscripcion)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(mContext,"Se añadio la suscripcion a su lista de suscripciones", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+
+                });
     }
 }
