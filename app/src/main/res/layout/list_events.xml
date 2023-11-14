@@ -25,9 +25,10 @@
             <!-- Foto -->
             <ImageView
                 android:id="@+id/eventImageView"
-                android:layout_width="52dp"
+                android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/ic_save" />
+                android:paddingRight="10dp"
+                app:srcCompat="@drawable/diary" />
 
             <!-- Nombre del evento y Fecha -->
             <LinearLayout
@@ -92,16 +93,28 @@
             <!-- Botón Editar -->
             <Button
                 android:id="@+id/editButton"
-                android:layout_width="69dp"
-                android:layout_height="wrap_content"
-                android:text="Editar" />
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:paddingLeft="5dp"
+                android:paddingEnd="0dp"
+                android:text="@string/editar"
+                app:icon="@drawable/edit"
+                app:iconSize="30dp"
+                app:iconTint="@color/black" />
 
             <!-- Botón Eliminar -->
             <Button
-                android:id="@+id/deleteButton"
-                android:layout_width="78dp"
-                android:layout_height="wrap_content"
-                android:text="Eliminar" />
+                android:id="@+id/btn_eliminar"
+                android:layout_width="48dp"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:paddingLeft="5dp"
+                android:paddingEnd="0dp"
+                android:text="Eliminar"
+                app:icon="@drawable/remove"
+                app:iconSize="30dp"
+                app:iconTint="@color/black" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -28,11 +28,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -47,6 +49,7 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     FirebaseAuth mAuth;
     RecyclerView recyclerView;
     EventListAdapter mAdapter;
+    String horaFormateada;
     private Date selectedDate;
     private int selectedTimeMinutes = -1;
     @Override
@@ -64,6 +67,7 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_publisher_main);
         logout_btn = findViewById(R.id.logout_btn);
         logout_btn.setOnClickListener(view ->LogOut());
@@ -80,20 +84,17 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         // configuro Firestore y RecyclerView
         recyclerView = findViewById(R.id.listRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Query query = mFirestore.collection("eventos");
+        Query query = mFirestore.collection("eventos").whereEqualTo("publicador",mAuth.getUid());
 
         FirestoreRecyclerOptions<Event> firestoreRecyclerOptions =
                 new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
 
-        mAdapter = new EventListAdapter(firestoreRecyclerOptions);
+        mAdapter = new EventListAdapter(firestoreRecyclerOptions, this);
         recyclerView.setAdapter(mAdapter);
 
         createEventButton.setOnClickListener(view -> {
             publisherLayout.setVisibility(View.GONE);
             createEventLayout.setVisibility(View.VISIBLE);
-
-//            View otroLayout = getLayoutInflater().inflate(R.layout.create_event, null);
-//            createEventLayout.addView(otroLayout);
 
             sportsEventAutoComplete = otroLayout.findViewById(R.id.select_sportsEvent);
 
@@ -121,6 +122,9 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                 DatePickerDialog datePickerDialog = new DatePickerDialog(PublisherMain.this, (datePickerView, year1, monthOfYear, dayOfMonth) -> {
                     calendar.set(year1, monthOfYear, dayOfMonth);
                     selectedDate = calendar.getTime(); // guardo la fecha seleccionada
+                    SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+                    String fechaFormateada = formatoFecha.format(selectedDate);
+                    dateCalendarEditText.setText(fechaFormateada);
                 }, year, month, day);
 
                 datePickerDialog.show();
@@ -140,8 +144,11 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                         (timePicker, selectedHour, selectedMinute) -> {
                             calendarTime.set(Calendar.HOUR_OF_DAY, selectedHour);
                             calendarTime.set(Calendar.MINUTE, selectedMinute);
+                            selectedTimeMinutes = selectedHour * 60 + selectedMinute;
 
-                            selectedTimeMinutes = selectedHour * 60 + selectedMinute; // guardar la hora como minutos
+                            SimpleDateFormat horaFormateada = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                            String formattedTime = horaFormateada.format(calendarTime.getTime());
+                            timeEventEditText.setText(formattedTime);
                         },
                         hour, // hora actual
                         minute, // minutos actuales
@@ -150,6 +157,7 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                 // mostrar el TimePickerDialog
                 timePickerDialog.show();
             });
+
 
             Button seleccionarUbicacionButton = otroLayout.findViewById(R.id.botonSeleccionarUbicacion);
             seleccionarUbicacionButton.setOnClickListener(saveEventView -> {
@@ -224,13 +232,12 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     }
 
     private void postEvent(String nameEvent, String quantityEvent, String sportsEvent, Date dateEventStr, Date timeEventStr, LatLng selectedLocation) {
-        mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         List<String> suscriptores = new ArrayList<>();
         Map<String, Object> event = new HashMap<>();
         event.put("id", UUID.randomUUID().toString());
         event.put("nombre", nameEvent);
-        event.put("publicador", currentUser.getUid());;
+        event.put("publicador", currentUser.getUid());
         event.put("cantidad", Integer.parseInt(quantityEvent));
         event.put("status", "Incompleto");
         event.put("deporte", sportsEvent);

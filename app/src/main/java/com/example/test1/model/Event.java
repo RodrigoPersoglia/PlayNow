@@ -13,13 +13,12 @@ public class Event {
     private String Localizacion;
     private Double Latitud;
     private Double Longitud;
-
     private Integer Cantidad;
 
     public Event() {
     }
 
-    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion,String id, Double latitud,Double longitud, Integer cantidad) {
+    public Event(String nombre, String publicador, String status, String sports, Date fecha, Date hora, String localizacion, String id, Double latitud, Double longitud, Integer cantidad) {
         this.Nombre = nombre;
         this.Publicador = publicador;
         this.Status = status;
@@ -33,22 +32,13 @@ public class Event {
         this.Cantidad = cantidad;
     }
 
-    public Integer getCantidad() {
-        return Cantidad;
-    }
-    public void setCantidad(Integer cantidad) {
-        Cantidad = cantidad;
-    }
-    public Double getLatitud() {
-        return Latitud;
-    }
-    public void setLatitud(Double latitud) {
-        Latitud = latitud;
+    public String getId() {
+        return Id;
     }
 
-    public String getId() { return Id;}
-
-    public void setId(String id) { Id = id;}
+    public void setId(String id) {
+        Id = id;
+    }
 
     public String getNombre() {
         return Nombre;
@@ -85,6 +75,7 @@ public class Event {
     public Date getFecha() {
         return Fecha;
     }
+
     public void setFecha(Date fecha) {
         Fecha = fecha;
     }
@@ -103,6 +94,30 @@ public class Event {
 
     public void setLocalizacion(String localizacion) {
         Localizacion = localizacion;
+    }
+
+    public Double getLatitud() {
+        return Latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        Latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return Longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        Longitud = longitud;
+    }
+
+    public Integer getCantidad() {
+        return Cantidad;
+    }
+
+    public void setCantidad(Integer cantidad) {
+        Cantidad = cantidad;
     }
 
     @Override

@@ -8,4 +8,7 @@
     <string name="lista_de_eventos">Lista de Eventos</string>
     <string name="select">   Seleccionar Deporte</string>
     <string name="fecha_evento">Seleccionar fecha del evento</string>
+    <string name="editar">Editar</string>
+
+
 </resources>

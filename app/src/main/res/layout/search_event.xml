@@ -108,10 +108,11 @@
             <Button
                 android:id="@+id/image_calendar"
                 android:layout_width="74dp"
-                android:layout_height="52dp"
+                android:layout_height="58dp"
                 android:backgroundTint="@color/transparent"
+                android:padding="15dp"
                 app:cornerRadius="10dp"
-                app:icon="@drawable/ic_calendary"
+                app:icon="@drawable/calendar"
                 app:iconSize="48dp"
                 app:iconTint="#000000" />
         </LinearLayout>

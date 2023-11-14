@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
+            android:paddingTop="30dp"
             android:text="Eventos creados"
             android:textColor="@color/black"
             android:textSize="20sp"
@@ -62,7 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp" />
+            android:layout_marginEnd="10dp"
+            android:padding="15dp" />
 
     </LinearLayout>
 
