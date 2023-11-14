@@ -215,7 +215,9 @@ public class SubscriberMain extends AppCompatActivity {
                             if (location != null) {
                                 double latitude = location.getLatitude();
                                 double longitude = location.getLongitude();
-                                ShowCards(latitude, longitude);
+                                String radioStr = radio_txt.getText().toString();
+                                int radio = Integer.parseInt(radioStr);
+                                ShowCards(latitude, longitude,radio);
                             } else {
                                 Toast.makeText(SubscriberMain.this,
                                         "No se pudo obtener la ubicación", Toast.LENGTH_SHORT).show();
@@ -225,16 +227,23 @@ public class SubscriberMain extends AppCompatActivity {
         }
     }
 
-    private void ShowCards(double latitude, double longitude) {
+    private void ShowCards(double latitude, double longitude, int radio) {
         recyclerView = search_lay.findViewById(R.id.search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(subscriber_lay.getContext()));
         mFirestore = FirebaseFirestore.getInstance();
         Date selectedDate = fechaSeleccionada();
+
+        double distanciaGrados = radio / 111.32;
+
         String selectedSport = String.valueOf(select_sportsEvent.getText());
         Query query = mFirestore.collection("eventos")
                 .whereGreaterThanOrEqualTo("fecha", selectedDate)
                 .whereEqualTo("deporte", selectedSport)
                 .whereEqualTo("status", "Incompleto")
+                .whereGreaterThanOrEqualTo("latitud", latitude - distanciaGrados)
+                .whereLessThanOrEqualTo("latitud", latitude + distanciaGrados)
+                .whereGreaterThanOrEqualTo("longitud", longitude - distanciaGrados)
+                .whereLessThanOrEqualTo("longitud", longitude + distanciaGrados)
                 .limit(50)
                 .orderBy("fecha");
 
@@ -256,5 +265,5 @@ public class SubscriberMain extends AppCompatActivity {
             return new Date();
         }
     }
-
+    
 }
