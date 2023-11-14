@@ -5,6 +5,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -41,7 +42,7 @@ import java.util.UUID;
 public class PublisherMain extends AppCompatActivity implements LocationSelectionListener {
     private Button createEventButton,logout_btn,back_btn;
     private LinearLayout publisherLayout,createEventLayout;
-    EditText nombreEventoEditText, publicadorEditText, quantityEditText, dateCalendarEditText, timeEventEditText;
+    EditText nombreEventoEditText, quantityEditText, dateCalendarEditText, timeEventEditText;
     AutoCompleteTextView sportsEventAutoComplete;
     private LatLng selectedLocation;
     private boolean locationSelected = false;
@@ -169,7 +170,6 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
             Button saveEventButton = otroLayout.findViewById(R.id.search_event_btn);
             saveEventButton.setOnClickListener(saveEventView -> {
                 nombreEventoEditText = otroLayout.findViewById(R.id.txt_nombreEvent);
-                publicadorEditText = otroLayout.findViewById(R.id.txt_publicadorEvent);
                 quantityEditText = otroLayout.findViewById(R.id.radio_txt);
                 dateCalendarEditText = otroLayout.findViewById(R.id.date_CalendarEvent);
                 timeEventEditText = otroLayout.findViewById(R.id.time_Event);
@@ -179,7 +179,6 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                 String sportsEvent = sportsEventAutoComplete.getText().toString();
 
                 if (Validations(nameEvent, quantityEvent, sportsEvent, selectedDate, selectedTimeMinutes, selectedLocation)) {
-                    // creo el objeto Date para la hora seleccionada
                     Calendar calendarTime = Calendar.getInstance();
                     calendarTime.set(Calendar.HOUR_OF_DAY, selectedTimeMinutes / 60); // hora
                     calendarTime.set(Calendar.MINUTE, selectedTimeMinutes % 60); // minutos
@@ -212,16 +211,26 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
 
         if (sportsEvent.trim().isEmpty()) {
             result = false;
-            Toast.makeText(PublisherMain.this, "Debes seleccionar un Deporte antes de crear el evento", Toast.LENGTH_SHORT).show();
+            sportsEventAutoComplete.setError("Debes seleccionar un Deporte antes de crear el evento");
         }
+        else {
+            sportsEventAutoComplete.setError(null);
+        }
+
         if (dateEvent == null) {
             result = false;
-            Toast.makeText(PublisherMain.this, "Debes seleccionar una Fecha antes de crear el evento", Toast.LENGTH_SHORT).show();
+            dateCalendarEditText.setError("Debes seleccionar una Fecha antes de crear el evento");
+        }
+        else {
+            dateCalendarEditText.setError(null);
         }
 
         if (timeEventMinutes < 0) {
             result = false;
-            Toast.makeText(PublisherMain.this, "Debes seleccionar una Hora antes de crear el evento", Toast.LENGTH_SHORT).show();
+            timeEventEditText.setError("Debes seleccionar una Hora antes de crear el evento");
+        }
+        else {
+            timeEventEditText.setError(null);
         }
         if (selectedLocation == null) {
             result = false;
@@ -264,8 +273,15 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
 
     private void LogOut(){
         mAuth.signOut();
-        finish();
-        startActivity(new Intent(PublisherMain.this, MainActivity.class));
+        int delay = 2000;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+                startActivity(new Intent(PublisherMain.this, MainActivity.class));
+            }
+        }, delay);
+
     }
 
     private void Back(){

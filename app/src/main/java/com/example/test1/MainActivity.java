@@ -1,6 +1,8 @@
 package com.example.test1;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.Switch;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     String role;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +47,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        String usuario = sharedPreferences.getString("usuario", "");
+        email.setText(usuario);
+        String contrasena = sharedPreferences.getString("contrasena", "");
+        password.setText(contrasena);
+        String rol = sharedPreferences.getString("rol", "");
+        if(rol.equals("Publicador")){
+            sw.setChecked(true);
+        }
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            ValidateRole(user.getEmail());
+            ValidateRole(user.getEmail(),contrasena);
         }
     }
 
     private void StartComponents() {
+        sharedPreferences = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
         mAuth = FirebaseAuth.getInstance();
         sw = findViewById(R.id.publisher_switch);
         register = findViewById(R.id.btn_join);
@@ -115,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                ValidateRole(email);
+                                ValidateRole(email,password);
                             } else {
                                 Toast.makeText(MainActivity.this, "Usuario y/o contraseña invalida", Toast.LENGTH_SHORT).show();
                             }
@@ -130,15 +144,22 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void GoToView() {
+    private void GoToView(String usuario,String pass) {
+        editor.putString("usuario", usuario);
+        editor.putString("contrasena", pass);
+        String lastRole = "Suscriptor";
+
         Class rol = SubscriberMain.class;
         if (sw.isChecked()) {
+            lastRole = "Publicador";
             rol = PublisherMain.class;
         }
         GoTo(rol);
+        editor.putString("rol", lastRole);
+        editor.apply();
     }
 
-    public void ValidateRole(String email) {
+    public void ValidateRole(String email,String pass) {
 
         db = FirebaseFirestore.getInstance();
         CollectionReference usuariosRef = db.collection("usuarios");
@@ -157,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if (CheckRole(roleUser)) {
                                 Toast.makeText(MainActivity.this, "Bienvenido " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                                GoToView();
+                                GoToView(email,pass);
                             } else {
                                 Toast.makeText(MainActivity.this, "El rol seleccionado no coincide con su perfil de usuario", Toast.LENGTH_SHORT).show();
                                 mAuth.signOut();

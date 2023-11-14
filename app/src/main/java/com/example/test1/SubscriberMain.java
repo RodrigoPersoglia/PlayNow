@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -108,8 +109,14 @@ public class SubscriberMain extends AppCompatActivity {
 
     private void LogOut(){
         mAuth.signOut();
-        finish();
-        startActivity(new Intent(SubscriberMain.this, MainActivity.class));
+        int delay = 2000;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+                startActivity(new Intent(SubscriberMain.this, MainActivity.class));
+            }
+        }, delay);
     }
 
     private void Search(){
