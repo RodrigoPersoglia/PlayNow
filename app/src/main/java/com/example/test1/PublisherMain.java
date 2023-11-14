@@ -50,7 +50,6 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
     FirebaseAuth mAuth;
     RecyclerView recyclerView;
     EventListAdapter mAdapter;
-    String horaFormateada;
     private Date selectedDate;
     private int selectedTimeMinutes = -1;
     @Override
@@ -82,7 +81,6 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
         back_btn.setOnClickListener(view -> Back());
         mFirestore = FirebaseFirestore.getInstance();
 
-        // configuro Firestore y RecyclerView
         recyclerView = findViewById(R.id.listRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Query query = mFirestore.collection("eventos").whereEqualTo("publicador",mAuth.getUid());
@@ -135,12 +133,10 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
 
             Button timeButton = otroLayout.findViewById(R.id.image_time);
             timeButton.setOnClickListener(viewTime -> {
-                // hora actual
                 Calendar calendarTime = Calendar.getInstance();
                 int hour = calendarTime.get(Calendar.HOUR_OF_DAY);
                 int minute = calendarTime.get(Calendar.MINUTE);
 
-                // reloj
                 TimePickerDialog timePickerDialog = new TimePickerDialog(PublisherMain.this,
                         (timePicker, selectedHour, selectedMinute) -> {
                             calendarTime.set(Calendar.HOUR_OF_DAY, selectedHour);
@@ -151,11 +147,10 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
                             String formattedTime = horaFormateada.format(calendarTime.getTime());
                             timeEventEditText.setText(formattedTime);
                         },
-                        hour, // hora actual
-                        minute, // minutos actuales
+                        hour,
+                        minute,
                         true);
 
-                // mostrar el TimePickerDialog
                 timePickerDialog.show();
             });
 
@@ -180,8 +175,8 @@ public class PublisherMain extends AppCompatActivity implements LocationSelectio
 
                 if (Validations(nameEvent, quantityEvent, sportsEvent, selectedDate, selectedTimeMinutes, selectedLocation)) {
                     Calendar calendarTime = Calendar.getInstance();
-                    calendarTime.set(Calendar.HOUR_OF_DAY, selectedTimeMinutes / 60); // hora
-                    calendarTime.set(Calendar.MINUTE, selectedTimeMinutes % 60); // minutos
+                    calendarTime.set(Calendar.HOUR_OF_DAY, selectedTimeMinutes / 60);
+                    calendarTime.set(Calendar.MINUTE, selectedTimeMinutes % 60);
                     Date selectedTimeDate = calendarTime.getTime();
 
                     postEvent(nameEvent, quantityEvent, sportsEvent, selectedDate, selectedTimeDate, selectedLocation);

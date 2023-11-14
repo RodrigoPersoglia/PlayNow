@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.test1.Adapter.EventListAdapter;
 import com.example.test1.Adapter.EventListSearchAdapter;
 import com.example.test1.Adapter.ListSubscriptionAdapter;
 import com.example.test1.model.Event;
@@ -37,8 +36,6 @@ import com.google.firebase.firestore.Query;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
