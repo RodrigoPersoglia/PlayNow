@@ -39,6 +39,7 @@
                 android:gravity="center">
 
                 <!-- Nombre del evento -->
+
                 <TextView
                     android:id="@+id/nameTextView"
                     android:layout_width="match_parent"
@@ -89,25 +90,88 @@
                         android:textStyle="normal" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Latitud:" />
+
+                    <TextView
+                        android:id="@+id/latitudTextView"
+                        android:layout_width="146dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Latitud" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="88dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Longitud:" />
+
+                    <TextView
+                        android:id="@+id/longitudTextView"
+                        android:layout_width="168dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Longitud" />
+                </LinearLayout>
+
 
             </LinearLayout>
 
-            <Button
-                android:id="@+id/editButton"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|center_horizontal|center_vertical"
-                android:background="@color/transparent"
-                android:gravity="end"
-                android:paddingLeft="0dp"
-                android:paddingTop="0dp"
-                android:paddingRight="0dp"
-                android:paddingBottom="0dp"
-                app:icon="@drawable/check"
-                app:iconGravity="end"
-                app:iconPadding="0dp"
-                app:iconSize="30dp"
-                app:iconTint="#689F38" />
+            <LinearLayout
+                android:layout_width="109dp"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/locationButton"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal|center_vertical"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:gravity="end"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    app:icon="@drawable/ic_localization"
+                    app:iconGravity="end"
+                    app:iconPadding="0dp"
+                    app:iconSize="30dp"
+                    app:iconTint="#0739ED" />
+
+                <Button
+                    android:id="@+id/editButton"
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|center_horizontal|center_vertical"
+                    android:background="@color/transparent"
+                    android:gravity="end"
+                    android:paddingLeft="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingRight="0dp"
+                    android:paddingBottom="0dp"
+                    app:icon="@drawable/check"
+                    app:iconGravity="end"
+                    app:iconPadding="0dp"
+                    app:iconSize="30dp"
+                    app:iconTint="#689F38" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

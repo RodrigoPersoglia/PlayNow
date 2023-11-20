@@ -118,7 +118,7 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
                                                 .addOnSuccessListener(aVoid -> {
                                                     Toast.makeText(mContext,"Se ha suscripto correctamente al evento", Toast.LENGTH_SHORT).show();
                                                     Subscription suscripcion = new Subscription(mAuth.getUid(),event.getId(),event.getFecha(),event.getHora(),
-                                                    event.getNombre(),"Suscripto",event.getDeporte());
+                                                    event.getNombre(),"Suscripto",event.getDeporte(), event.getLatitud(), event.getLongitud());
                                                     agregarSuscripcion(suscripcion);
                                                     if (finalSuscriptores.size() == event.getCantidad()) {
                                                         document.getReference().update("status", "Completo")

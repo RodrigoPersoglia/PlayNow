@@ -1,8 +1,9 @@
 package com.example.test1.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Subscription {
+public class Subscription implements Serializable {
     private String Usuario;
     private String Evento;
     private Date Fecha;
@@ -11,11 +12,12 @@ public class Subscription {
     private String Status;
     private String Deporte;
 
-
+    private double Latitud;
+    private double Longitud;
     public Subscription() {
     }
 
-    public Subscription(String usuario, String evento, Date fecha, Date hora, String nombre, String status, String deporte) {
+    public Subscription(String usuario, String evento, Date fecha, Date hora, String nombre, String status, String deporte, Double latitud, Double longitud) {
         this.Usuario = usuario;
         this.Evento = evento;
         this.Fecha = fecha;
@@ -23,6 +25,8 @@ public class Subscription {
         this.Nombre = nombre;
         this.Status = status;
         this.Deporte = deporte;
+        this.Latitud = latitud;
+        this.Longitud = longitud;
     }
 
     public String getUsuario() { return Usuario;}
@@ -46,6 +50,21 @@ public class Subscription {
     public String getDeporte() { return Deporte;}
     public void setDeporte(String deporte) { Deporte = deporte;}
 
+    public Double getLatitud() {
+        return Latitud;
+    }
+
+    public void setLatitud(Double latitud) {
+        Latitud = latitud;
+    }
+
+    public Double getLongitud() {
+        return Longitud;
+    }
+
+    public void setLongitud(Double longitud) {
+        Longitud = longitud;
+    }
     @Override
     public String toString() {return Nombre;}
 }

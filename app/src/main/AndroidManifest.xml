@@ -33,7 +33,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity android:name=".fragments.LocationEventFragment" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCwBQ7K3WphvIgOxPTKmMKLgli8AFWRgvo" />
