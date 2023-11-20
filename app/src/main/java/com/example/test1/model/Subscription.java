@@ -12,8 +12,8 @@ public class Subscription implements Serializable {
     private String Status;
     private String Deporte;
 
-    private double Latitud;
-    private double Longitud;
+    private Double Latitud;
+    private Double Longitud;
     public Subscription() {
     }
 

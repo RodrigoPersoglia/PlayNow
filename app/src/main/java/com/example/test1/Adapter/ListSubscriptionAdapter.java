@@ -9,13 +9,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.test1.R;
+import com.example.test1.fragments.LocationEventFragment;
 import com.example.test1.model.Subscription;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -48,10 +51,35 @@ public class ListSubscriptionAdapter extends FirestoreRecyclerAdapter<Subscripti
         viewHolder.longitud.setText(String.valueOf(subscription.getLongitud()));
         viewHolder.latitud.setText(String.valueOf(subscription.getLatitud()));
 
-//        Log.d("ListSubscriptionAdapter", "Latitud: " + subscription.getLatitud());
-//        Log.d("ListSubscriptionAdapter", "Longitud: " + subscription.getLongitud());
+        Context context = viewHolder.itemView.getContext();
 
-//        viewHolder.locationButton.setTag(subscription.getLatitud(), subscription.getLongitud());
+        viewHolder.locationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (subscription != null && subscription.getLatitud() != null && subscription.getLongitud() != null) {
+                    double latitud = subscription.getLatitud();
+                    double longitud = subscription.getLongitud();
+
+                    LatLng eventLocation = new LatLng(latitud, longitud);
+                    openMapDialog(context, eventLocation);
+                } else {
+                    Log.e("ListSubscriptionAdapter", "Campos de ubicación nulos");
+                }
+            }
+        });
+    }
+
+    private void openMapDialog(Context context, LatLng eventLocation) {
+        if (eventLocation.latitude != 0 && eventLocation.longitude != 0) {
+            LocationEventFragment locationEvent = LocationEventFragment.newInstance(eventLocation);
+            if (context instanceof FragmentActivity) {
+                locationEvent.show(((FragmentActivity) context).getSupportFragmentManager(), "mapDialog");
+            } else {
+                Log.e("ListSubscriptionAdapter", "El contexto no es una instancia de FragmentActivity");
+            }
+        } else {
+            Log.e("ListSubscriptionAdapter", "Latitud o longitud nulos");
+        }
     }
 
     @NonNull
@@ -70,17 +98,7 @@ public class ListSubscriptionAdapter extends FirestoreRecyclerAdapter<Subscripti
             nombre = itemView.findViewById(R.id.nameTextView);
             fecha = itemView.findViewById(R.id.dateTextView);
             hora = itemView.findViewById(R.id.timeTextView);
-            longitud = itemView.findViewById(R.id.longitudTextView);
-            latitud = itemView.findViewById(R.id.latitudTextView);
-
             locationButton = itemView.findViewById(R.id.locationButton);
-
         }
     }
-
-//    private void mostrarUbicacionEvento(Subscription subscription) {
-//        LocationEventFragment locationEventFragment = LocationEventFragment.newInstance(subscription);
-//        locationEventFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(), "LocationEventFragment");
-//    }
-
 }

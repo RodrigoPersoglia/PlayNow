@@ -1,81 +1,63 @@
 package com.example.test1.fragments;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.test1.R;
-import com.example.test1.model.Subscription;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.example.test1.R;
 
 public class LocationEventFragment extends DialogFragment implements OnMapReadyCallback {
 
-    private GoogleMap mMap;
-    private Subscription subscription;
+    private static final String ARG_EVENT_LOCATION = "eventLocation";
 
-    public LocationEventFragment() {
-        // Constructor público vacío requerido
-    }
+    private LatLng eventLocation;
 
-    public static LocationEventFragment newInstance(Subscription subscription) {
+    public static LocationEventFragment newInstance(LatLng eventLocation) {
         LocationEventFragment fragment = new LocationEventFragment();
         Bundle args = new Bundle();
-        args.putSerializable("subscription", subscription);
+        args.putParcelable(ARG_EVENT_LOCATION, eventLocation);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_fragment_location_event, container, false);
-    }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.dialog_fragment_location_event, container, false);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        MapView mapView = view.findViewById(R.id.map_event_location);
-        if (mapView != null) {
-            mapView.onCreate(null);
-            mapView.onResume();
-            mapView.getMapAsync(this);
-        }
-
-        // Obtener la suscripción de los argumentos
         if (getArguments() != null) {
-            subscription = (Subscription) getArguments().getSerializable("subscription");
+            eventLocation = getArguments().getParcelable(ARG_EVENT_LOCATION);
         }
 
-        // Configurar otros elementos de tu diseño aquí si es necesario
-    }
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map_event_location);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return new Dialog(requireContext(), R.style.DialogTheme);
+        view.findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss(); // cierro modal
+            }
+        });
+
+        return view;
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        if (subscription != null) {
-            // Obtener la ubicación del evento desde la suscripción
-            LatLng eventLocation = new LatLng(subscription.getLatitud(), subscription.getLongitud());
-            mMap.addMarker(new MarkerOptions().position(eventLocation).title(subscription.getNombre()));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(eventLocation, 15.0f));
+        if (eventLocation != null) {
+            googleMap.addMarker(new MarkerOptions().position(eventLocation).title("Event Location"));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(eventLocation));
+            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f));
         }
     }
 }

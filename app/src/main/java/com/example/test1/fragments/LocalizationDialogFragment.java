@@ -26,7 +26,7 @@ public class LocalizationDialogFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.dialog_fragment_localization, container, false);
+        View view = inflater.inflate(R.layout.dialog_fragment_localization, container, false);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
@@ -34,14 +34,14 @@ public class LocalizationDialogFragment extends DialogFragment {
             mapFragment.getMapAsync(callback);
         }
 
-        rootView.findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.closeButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss(); // cierro modal
             }
         });
 
-        return rootView;
+        return view;
     }
 
     @Override
