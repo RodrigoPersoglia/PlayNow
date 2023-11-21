@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -57,7 +58,9 @@ public class LocationEventFragment extends DialogFragment implements OnMapReadyC
         if (eventLocation != null) {
             googleMap.addMarker(new MarkerOptions().position(eventLocation).title("Event Location"));
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(eventLocation));
-            googleMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f));
+            CameraUpdate center = CameraUpdateFactory.newLatLng(eventLocation);
+            googleMap.moveCamera(center);
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(eventLocation, 15.0f));
         }
     }
 }

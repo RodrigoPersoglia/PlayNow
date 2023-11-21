@@ -61,7 +61,7 @@ public class SubscriberMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscriber_main);
         StartComponents();
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     protected void onStart() {

@@ -48,8 +48,8 @@ public class ListSubscriptionAdapter extends FirestoreRecyclerAdapter<Subscripti
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         String formattedTime = timeFormat.format(subscription.getHora());
         viewHolder.hora.setText(formattedTime);
-        viewHolder.longitud.setText(String.valueOf(subscription.getLongitud()));
-        viewHolder.latitud.setText(String.valueOf(subscription.getLatitud()));
+//        viewHolder.longitud.setText(String.valueOf(subscription.getLongitud()));
+//        viewHolder.latitud.setText(String.valueOf(subscription.getLatitud()));
 
         Context context = viewHolder.itemView.getContext();
 
@@ -90,7 +90,7 @@ public class ListSubscriptionAdapter extends FirestoreRecyclerAdapter<Subscripti
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nombre,fecha,hora, latitud, longitud;
+        TextView nombre,fecha,hora;
         Button locationButton;
 
         public ViewHolder(@NonNull View itemView) {
