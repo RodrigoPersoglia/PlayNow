@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.test1.R;
 import com.example.test1.SubscriberMain;
 import com.example.test1.model.Event;
+import com.example.test1.model.NotificationHelper;
 import com.example.test1.model.Subscription;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -117,6 +118,7 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
                                         document.getReference().update("suscriptores", suscriptores)
                                                 .addOnSuccessListener(aVoid -> {
                                                     Toast.makeText(mContext,"Se ha suscripto correctamente al evento", Toast.LENGTH_SHORT).show();
+                                                    NotificationHelper.mostrarNotificacion(mContext, "Suscripción", "Su solicitud ha sido aprobada");
                                                     Subscription suscripcion = new Subscription(mAuth.getUid(),event.getId(),event.getFecha(),event.getHora(),
                                                     event.getNombre(),"Suscripto",event.getDeporte(), event.getLatitud(), event.getLongitud());
                                                     agregarSuscripcion(suscripcion);
@@ -152,7 +154,7 @@ public class EventListSearchAdapter extends FirestoreRecyclerAdapter<Event, Even
         db.collection("suscripciones")
                 .add(suscripcion)
                 .addOnSuccessListener(documentReference -> {
-                    Toast.makeText(mContext,"Se añadio la suscripcion a su lista de suscripciones", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext,"Se añadio la suscripcion a su lista de suscripciones", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
 
